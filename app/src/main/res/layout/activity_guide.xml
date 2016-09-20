@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.wanglipeng.a32014.onewang.GuideActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="我的文艺生活"
+        android:textSize="15sp"
+        android:id="@+id/text_guide"
+        android:layout_centerInParent="true"
+         />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_guide"
+        android:background="@mipmap/push"
+        android:layout_above="@id/text_guide"
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
