@@ -9,7 +9,7 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_pager"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="180dp">
     </android.support.v4.view.ViewPager>
 
     <LinearLayout
@@ -18,7 +18,19 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignBottom="@id/vp_pager"
-        android:layout_marginBottom="15dp"
-        android:gravity="center">
+        android:layout_marginBottom="7dp">
     </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/home_01"
+            android:layout_below="@id/vp_pager"
+            android:layout_margin="10dp">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_pager_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        </RelativeLayout>
 </RelativeLayout>

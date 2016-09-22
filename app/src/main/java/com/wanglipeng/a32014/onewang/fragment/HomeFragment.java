@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.wanglipeng.a32014.onewang.R;
 import com.wanglipeng.a32014.onewang.adapter.MyHomeAdapter;
+import com.wanglipeng.a32014.onewang.callback.CallBackData;
 import com.wanglipeng.a32014.onewang.httputils.HttpUtils;
+import com.wanglipeng.a32014.onewang.httputils.OkHttpUtils;
 import com.wanglipeng.a32014.onewang.json.JsonToHomePage;
 import com.wanglipeng.a32014.onewang.path.PathContents;
 
@@ -29,13 +31,20 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
 
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what==10){
-                String data = (String) msg.obj;
-                if(data!=null){
+    View view;
+    ViewPager viewPager;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager_home);
+        OkHttpUtils okHttpUtils = OkHttpUtils.getOkHttpUtils();
+        okHttpUtils.getDataByNetwork(PathContents.HOME.HOME_PATH);
+        okHttpUtils.setCallBackData(new CallBackData() {
+            @Override
+            public void getDataCallBack(String data,String path) {
+                if(path.equals(PathContents.HOME.HOME_PATH)){
                     String[] array = JsonToHomePage.getHomePage(data);
                     int length = array.length;
                     FragmentManager fragmentManager = getFragmentManager();
@@ -49,40 +58,10 @@ public class HomeFragment extends Fragment {
                     }
                     MyHomeAdapter myHomeAdapter = new MyHomeAdapter(fragmentManager,fragmentList);
                     viewPager.setAdapter(myHomeAdapter);
-                }else{
-                    Toast.makeText(getActivity(), "无网络连接", Toast.LENGTH_SHORT).show();
                 }
-
             }
-        }
-    };
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    View view;
-    ViewPager viewPager;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_home, container, false);
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager_home);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String data = HttpUtils.getStringByNetwork(PathContents.HOME.HOME_PATH);
-
-                handler.obtainMessage(10,data).sendToTarget();
-            }
-        }).start();
-
+        });
         return view;
     }
+
 }

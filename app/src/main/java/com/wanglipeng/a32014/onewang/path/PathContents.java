@@ -15,7 +15,8 @@ public class PathContents {
     public static class READING {
         //阅读界面的广播轮播的接口
         public static final String READING_AD_PATH = "http://v3.wufazhuce.com:8000/api/reading/carousel/?";
-        //阅读界面的广播轮播下的短片连载问答的接口
+        //阅读界面的广播轮播下的短片连载问答的接口   //阅读界面的广告轮播的详情页面接口地址％s用广播轮播接口中的id进行传递拼接
+        public static final String READING_AD_DETIL_PATH ="http://v3.wufazhuce.com:8000/api/reading/carousel/%s";
         public static final String READING_CONTENT_PATH = "http://v3.wufazhuce.com:8000/api/reading/index/?";
 
         //连载的详情页内容的接口地址

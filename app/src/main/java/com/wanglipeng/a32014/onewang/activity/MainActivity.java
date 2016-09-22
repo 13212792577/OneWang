@@ -1,5 +1,6 @@
-package com.wanglipeng.a32014.onewang;
+package com.wanglipeng.a32014.onewang.activity;
 
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -9,6 +10,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.wanglipeng.a32014.onewang.R;
 import com.wanglipeng.a32014.onewang.fragment.HomeFragment;
 import com.wanglipeng.a32014.onewang.fragment.MovieFragment;
 import com.wanglipeng.a32014.onewang.fragment.MusicFragment;
@@ -28,6 +30,11 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(Build.VERSION.SDK_INT>=21){
+            getWindow().setStatusBarColor(getResources().getColor(android.R.color.black));
+        }
+
         radioGroup = (RadioGroup) findViewById(R.id.rg_bottom);
         textView = (TextView) findViewById(R.id.text_center);
         initFragment();

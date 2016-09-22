@@ -24,7 +24,9 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.wanglipeng.a32014.onewang.R;
 import com.wanglipeng.a32014.onewang.bean.HomeData;
+import com.wanglipeng.a32014.onewang.callback.CallBackData;
 import com.wanglipeng.a32014.onewang.httputils.HttpUtils;
+import com.wanglipeng.a32014.onewang.httputils.OkHttpUtils;
 import com.wanglipeng.a32014.onewang.path.PathContents;
 
 import java.io.File;
@@ -32,36 +34,12 @@ import java.io.File;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeContentFragment extends Fragment implements View.OnClickListener{
+public class HomeContentFragment extends LazyFragment implements View.OnClickListener{
 
     static boolean flag = false;
     int praisenum;
     String hp_img_url;
     boolean heart = true;
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what==5){
-                String data = (String) msg.obj;
-                if(data!=null){
-                    Gson gson = new Gson();
-                    HomeData homeData = gson.fromJson(data, HomeData.class);
-                    hp_img_url = homeData.getData().getHp_img_url();
-                    Picasso.with(getActivity()).load(hp_img_url).placeholder(R.drawable.default_hp_image).into(imageView);
-                    textView1.setText(homeData.getData().getHp_title());
-                    textView2.setText(homeData.getData().getHp_author());
-                    textView3.setText(homeData.getData().getHp_content());
-                    textView4.setText(homeData.getData().getHp_makettime());
-                    praisenum = homeData.getData().getPraisenum();
-                    textView5.setText(String.valueOf(praisenum));
-                }else{
-                    Toast.makeText(getActivity(), "无网络连接", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }
-    };
 
     TextView textView1,textView2,textView3,textView4,textView5;
     ImageView imageView,imageView2;
@@ -85,37 +63,38 @@ public class HomeContentFragment extends Fragment implements View.OnClickListene
         textView3 = (TextView) view.findViewById(R.id.hp_content);
         textView4 = (TextView) view.findViewById(R.id.hp_makettime);
         textView5 = (TextView) view.findViewById(R.id.text_heart);
-        Bundle bundle = getArguments();
-        String page = bundle.getString("page");
-        final String path = String.format(PathContents.HOME.HOME_DETAIL_PATH,page);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String data = HttpUtils.getStringByNetwork(path);
-                handler.obtainMessage(5,data).sendToTarget();
-            }
-        }).start();
         flag = true;
+        lazyLoad();
         return view;
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            Bundle bundle = getArguments();
-            String page = bundle.getString("page");
-            if(flag){
-                final String path = String.format(PathContents.HOME.HOME_DETAIL_PATH,page);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String data = HttpUtils.getStringByNetwork(path);
-                        handler.obtainMessage(5,data).sendToTarget();
-                    }
-                }).start();
-            }
+    protected void lazyLoad() {
+        if(!flag || !isVisible){
+            return;
         }
+        Bundle bundle = getArguments();
+        String page = bundle.getString("page");
+        final String path = String.format(PathContents.HOME.HOME_DETAIL_PATH,page);
+        OkHttpUtils okHttpUtils = OkHttpUtils.getOkHttpUtils();
+        okHttpUtils.getDataByNetwork(path);
+        okHttpUtils.setCallBackData(new CallBackData() {
+            @Override
+            public void getDataCallBack(String data,String path1) {
+                if(path1.equals(path)){
+                    Gson gson = new Gson();
+                    HomeData homeData = gson.fromJson(data, HomeData.class);
+                    hp_img_url = homeData.getData().getHp_img_url();
+                    Picasso.with(getActivity()).load(hp_img_url).placeholder(R.drawable.default_hp_image).into(imageView);
+                    textView1.setText(homeData.getData().getHp_title());
+                    textView2.setText(homeData.getData().getHp_author());
+                    textView3.setText(homeData.getData().getHp_content());
+                    textView4.setText(homeData.getData().getHp_makettime());
+                    praisenum = homeData.getData().getPraisenum();
+                    textView5.setText(String.valueOf(praisenum));
+                }
+            }
+        });
     }
 
     @Override
@@ -152,7 +131,7 @@ public class HomeContentFragment extends Fragment implements View.OnClickListene
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
 
-        Window window = dialog.getWindow();
+        final Window window = dialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.gravity = Gravity.CENTER;
         lp.width = width;
@@ -163,6 +142,7 @@ public class HomeContentFragment extends Fragment implements View.OnClickListene
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                window.setWindowAnimations(R.style.WindowDialogAnimation);
                 dialog.dismiss();
             }
         });

@@ -25,4 +25,21 @@ public class JsonToReadPictureUrl {
         }
         return  null;
     }
+
+    public static String[] getReadId(String data){
+        try {
+            JSONObject object = new JSONObject(data);
+            JSONArray array = object.getJSONArray("data");
+            int length = array.length();
+            String[] strings = new String[length];
+            for(int i=0;i<length;i++){
+                JSONObject object1 = array.getJSONObject(i);
+                strings[i] = object1.getString("id");
+            }
+            return strings;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
 }

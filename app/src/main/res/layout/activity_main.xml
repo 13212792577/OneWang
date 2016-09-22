@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wanglipeng.a32014.onewang.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#44000000"
-            android:layout_alignBottom="@+id/image_search"
+            android:layout_alignParentBottom="true"
             android:layout_alignRight="@+id/image_individual"
             android:layout_alignEnd="@+id/image_individual" />
     </RelativeLayout>
